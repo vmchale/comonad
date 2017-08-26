@@ -20,3 +20,7 @@ implementation (Functor f) => Functor (Cofree f) where
 
 implementation (Functor f) => Comonad (Cofree f) where
   extract (Co a _) = a
+
+||| Recursion using comonads
+unfold : (Functor f) => (g : (b -> (a, f b))) -> b -> Cofree f a
+unfold g c = let (x, d) = g c in Co x (map (unfold g) d)
