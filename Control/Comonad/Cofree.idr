@@ -8,7 +8,7 @@ module Data.Profunctor.Comonad.Cofree
 
 import Control.Comonad
 
-%access export
+%access public export
 
 ||| Constructor for a cofree comonad
 data Cofree : (f : Type -> Type) -> Type -> Type where
