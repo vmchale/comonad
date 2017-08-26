@@ -11,7 +11,7 @@ import Control.Comonad
 data Cofree : (f : Type -> Type) -> Type -> Type where
   Co : a -> f (Cofree f a) -> Cofree f a
 
-interface (Functor f, Comonad w) => ComonadCofree (f : Type -> Type) (w : Type -> Type) where
+public export interface (Functor f, Comonad w) => ComonadCofree (f : Type -> Type) (w : Type -> Type) where
   unwrap : w a -> f (w a)
 
 implementation (Functor f) => Functor (Cofree f) where
