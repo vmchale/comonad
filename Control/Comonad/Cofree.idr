@@ -22,11 +22,14 @@ implementation (Functor f) => Functor (Cofree f) where
   map f m = assert_total $ case m of
     Co a as => Co (f a) (map (map f) as)
 
-implementation (Functor f) => Comonad (Cofree f) where
-  extract (Co a _) = a
+mutual
 
-implementation (Functor f) => ComonadCofree f (Cofree f) where
-  unwrap (Co _ as) = as
+  implementation (Functor f) => Comonad (Cofree f) where
+    extract (Co a _) = a
+    duplicate w = Co w (map duplicate (unwrap w))
+
+  implementation (Functor f) => ComonadCofree f (Cofree f) where
+    unwrap (Co _ as) = as
 
 ||| Recursion using comonads
 unfold : (Functor f) => (g : (b -> (a, f b))) -> b -> Cofree f a

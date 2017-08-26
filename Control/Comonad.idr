@@ -25,16 +25,17 @@ interface Functor w => Comonad (w : Type -> Type) where
   extract : w a -> a
 
   duplicate : w a -> w (w a)
-  duplicate = extend id
-
-  extend : (w a -> b) -> w a -> w b
-  extend f = map f . duplicate
 
 implementation Comonad Stream where
   extract (x::xs) = x
+  duplicate = pure
 
 implementation Comonad (Vect (S n)) where
   extract = head
+  duplicate = pure
+
+extend : (Comonad w) => (w a -> b) -> w a -> w b
+extend f = map f . duplicate
 
 ||| Lift a function into a function on comonadic values.
 liftW : (Comonad w) => (f : a -> b) -> (w a -> w b)
