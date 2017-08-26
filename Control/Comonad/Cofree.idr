@@ -2,15 +2,19 @@
 -- Module      : Data.Profunctor.Comonad.Cofree
 -- Description : 
 -- --------------------------------------------------------------------- [ EOH ]
+
+||| Cofree comonads; useful for histomorphisms and also recursion
 module Data.Profunctor.Comonad.Cofree
 
 import Control.Comonad
 
 %access export
 
+||| Constructor for a cofree comonad
 data Cofree : (f : Type -> Type) -> Type -> Type where
   Co : a -> f (Cofree f a) -> Cofree f a
 
+||| Typeclass for cofree comonads
 public export interface (Functor f, Comonad w) => ComonadCofree (f : Type -> Type) (w : Type -> Type) where
   unwrap : w a -> f (w a)
 
