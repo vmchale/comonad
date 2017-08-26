@@ -21,6 +21,9 @@ implementation (Functor f) => Functor (Cofree f) where
 implementation (Functor f) => Comonad (Cofree f) where
   extract (Co a _) = a
 
+implementation (Functor f) => ComonadCofree f (Cofree f) where
+  unwrap (Co _ as) = as
+
 ||| Recursion using comonads
 unfold : (Functor f) => (g : (b -> (a, f b))) -> b -> Cofree f a
 unfold g c = let (x, d) = g c in Co x (map (unfold g) d)
