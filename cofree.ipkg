@@ -1,0 +1,6 @@
+package cofree
+
+sourceloc  = git://git@github.com:vmchale/cofree.git
+bugtracker = http://www.github.com/vmchale/cofree/issues
+
+modules = Control.Comonad.Cofree
