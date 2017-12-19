@@ -4,14 +4,15 @@ module Control.Comonad
 import Data.Vect
 
 %access public export
+%default total
 
 infixr 1 =>=
 infixr 1 =<=
 infixr 1 <<=
 infixr 1 =>>
-infixl 4 <@>
-infixl 4 @>
-infixl 4 <@
+infixl 3 <@>
+infixl 3 @>
+infixl 3 <@
 
 ||| A comonad is the categorical dual of a monad. It must satisfy the following
 ||| laws:
