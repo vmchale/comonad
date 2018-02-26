@@ -85,10 +85,3 @@ implementation CoApplicative (Vect (S n)) where
   (<@>) = (<*>)
   (@>) _ y = y
   (<@) x _ = x
-
-||| Coapplicative zippers
-liftW2 : CoApplicative w => (f : a -> b -> c) -> w a -> w b -> w c
-liftW2 f a b = f <$> a <@> b
-
-liftW3 : CoApplicative w => (f : a -> b -> c -> d) -> w a -> w b -> w c -> w d
-liftW3 f a b c = f <$> a <@> b <@> c
