@@ -11,8 +11,8 @@ import Control.Comonad
 %access public export
 
 ||| Constructor for a cofree comonad
-data Cofree : (f : Type -> Type) -> Type -> Type where 
-  Co : a -> f (Cofree f a) -> Cofree f a
+data Cofree : (f : Type -> Type) -> Type -> Type where
+  Co : (a, f (Cofree f a)) -> Cofree f a
 
 ||| Typeclass for cofree comonads
 interface (Functor f, Comonad w) => ComonadCofree (f : Type -> Type) (w : Type -> Type) where
@@ -20,17 +20,17 @@ interface (Functor f, Comonad w) => ComonadCofree (f : Type -> Type) (w : Type -
 
 implementation (Functor f) => Functor (Cofree f) where
   map f m = assert_total $ case m of
-    Co a as => Co (f a) (map (map f) as)
+    Co (a, as) => Co (f a, map (map f) as)
 
 mutual
 
   implementation (Functor f) => Comonad (Cofree f) where
-    extract m = assert_total $ case m of Co a _ => a
-    duplicate w = assert_total $ Co w (map duplicate (unwrap w))
+    extract (Co (a, _)) = a
+    duplicate w = assert_total $ Co (w, map duplicate (unwrap w))
 
   implementation (Functor f) => ComonadCofree f (Cofree f) where
-    unwrap (Co _ as) = as
+    unwrap (Co (_, as)) = as
 
 ||| Recursion using comonads
 unfold : (Functor f) => (g : (b -> (a, f b))) -> b -> Cofree f a
-unfold g c = let (x, d) = g c in Co x (map (unfold g) d)
+unfold g c = let (x, d) = g c in Co (x, (map (unfold g) d))
