@@ -4,14 +4,12 @@ module Control.Comonad
 import Data.Vect
 
 %access public export
+%default total
 
 infixr 1 =>=
 infixr 1 =<=
 infixr 1 <<=
 infixr 1 =>>
-infixl 4 <@>
-infixl 4 @>
-infixl 4 <@
 
 ||| A comonad is the categorical dual of a monad. It must satisfy the following
 ||| laws:
@@ -23,29 +21,22 @@ infixl 4 <@
 ||| ```
 interface Functor w => Comonad (w : Type -> Type) where
   extract : w a -> a
-
+  extend : (w a -> b) -> w a -> w b
   duplicate : w a -> w (w a)
 
-implementation Comonad Stream where
-  extract (x::xs) = x
-  duplicate = pure
-
-implementation Comonad (Vect (S n)) where
-  extract = head
-  duplicate = pure
-
-extend : (Comonad w) => (w a -> b) -> w a -> w b
-extend f = map f . duplicate
-
+  -- default implementations
+  extend f = map f . duplicate
+  duplicate = extend id
+  
 ||| Lift a function into a function on comonadic values.
 liftW : (Comonad w) => (f : a -> b) -> (w a -> w b)
 liftW f = extend (f . extract)
 
-||| Left-to-right cokliesli composition
+||| Left-to-right cokleisli composition
 (=>=) : (Comonad w) => (w a -> b) -> (w b -> c) -> w a -> c
 (=>=) f g = g . extend f
 
-||| Right-to-left cokliesli composition
+||| Right-to-left cokleisli composition
 (=<=) : Comonad w => (w b -> c) -> (w a -> b) -> w a -> c
 (=<=) = flip (=>=)
 
@@ -57,38 +48,14 @@ liftW f = extend (f . extract)
 (=>>) : Comonad w => w a -> (w a -> b) -> w b
 (=>>) = flip extend
 
-||| CoApplicatives provide a categorical approach to zippers. They must satisfy
-||| the following laws:
-|||
-||| ```idris example
-||| (.) <$> u <@> v <@> w = u <@> (v <@> w)
-||| extract (p <@> q) = extract p (extract q)
-||| duplicate (p <@> q) = (<@>) <$> duplicate p <@> duplicate q
-||| ```
-|||
-||| If 'w' is an applicative functor, it must further satisfy
-|||
-||| ```idris example
-||| (<@>) = (<*>)
-||| ```
-interface (Comonad w) => CoApplicative (w : Type -> Type) where
-  (<@>) : w (a -> b) -> w a -> w b
-  (@>) : w a -> w b -> w b
-  (<@) : w a -> w b -> w a
+Comonad (Pair a) where
+  extract = snd
+  extend f t@(a, b) = (a, f t)
 
-implementation CoApplicative Stream where
-  (<@>) = (<*>)
-  (@>) _ y = y
-  (<@) x _ = x
+Comonad Stream where
+  extract (x::xs) = x
+  duplicate = pure
 
-implementation CoApplicative (Vect (S n)) where
-  (<@>) = (<*>)
-  (@>) _ y = y
-  (<@) x _ = x
-
-||| Coapplicative zippers
-liftW2 : CoApplicative w => (f : a -> b -> c) -> w a -> w b -> w c
-liftW2 f a b = f <$> a <@> b
-
-liftW3 : CoApplicative w => (f : a -> b -> c -> d) -> w a -> w b -> w c -> w d
-liftW3 f a b c = f <$> a <@> b <@> c
+Comonad (Vect (S n)) where
+  extract = head
+  duplicate = pure

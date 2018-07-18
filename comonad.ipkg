@@ -3,5 +3,10 @@ package comonad
 sourceloc  = git://git@github.com:vmchale/comonad.git
 bugtracker = http://www.github.com/vmchale/comonad/issues
 
-modules = Control.Comonad.Cofree
-        , Control.Comonad
+modules = Control.Comonad
+        , Control.Comonad.Trans
+        , Control.Comonad.Store
+        , Control.Comonad.Env
+        , Control.Comonad.Cofree
+        , Control.Coapplicative
+       

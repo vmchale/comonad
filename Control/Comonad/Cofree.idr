@@ -1,21 +1,21 @@
 -- -------------------------------------- [ Control.Comonad.Cofree.idr ]
--- Module      : Data.Profunctor.Comonad.Cofree
--- Description : 
+-- Module      : Control.Comonad.Cofree
+-- Description :
 -- --------------------------------------------------------------------- [ EOH ]
 
 ||| Cofree comonads; useful for histomorphisms and also recursion
-module Data.Profunctor.Comonad.Cofree
+module Control.Comonad.Cofree
 
 import Control.Comonad
 
 %access public export
 
 ||| Constructor for a cofree comonad
-data Cofree : (f : Type -> Type) -> Type -> Type where
+data Cofree : (f : Type -> Type) -> Type -> Type where 
   Co : a -> f (Cofree f a) -> Cofree f a
 
 ||| Typeclass for cofree comonads
-public export interface (Functor f, Comonad w) => ComonadCofree (f : Type -> Type) (w : Type -> Type) where
+interface (Functor f, Comonad w) => ComonadCofree (f : Type -> Type) (w : Type -> Type) where
   unwrap : w a -> f (w a)
 
 implementation (Functor f) => Functor (Cofree f) where
@@ -25,8 +25,8 @@ implementation (Functor f) => Functor (Cofree f) where
 mutual
 
   implementation (Functor f) => Comonad (Cofree f) where
-    extract (Co a _) = a
-    duplicate w = Co w (map duplicate (unwrap w))
+    extract m = assert_total $ case m of Co a _ => a
+    duplicate w = assert_total $ Co w (map duplicate (unwrap w))
 
   implementation (Functor f) => ComonadCofree f (Cofree f) where
     unwrap (Co _ as) = as
