@@ -14,7 +14,7 @@ infixr 1 =>>
 ||| A comonad is the categorical dual of a monad. It must satisfy the following
 ||| laws:
 |||
-||| ```idris example
+||| ```idris 
 ||| extend extract      = id
 ||| extract . extend f  = f
 ||| extend f . extend g = extend (f . extend g)
@@ -50,12 +50,14 @@ liftW f = extend (f . extract)
 
 Comonad (Pair a) where
   extract = snd
-  extend f t@(a, b) = (a, f t)
+  extend f t = (fst t, f t)
 
 Comonad Stream where
   extract (x::xs) = x
-  duplicate = pure
+  -- all tails of the initial stream
+  duplicate = iterate (drop 1)
 
 Comonad (Vect (S n)) where
   extract = head
-  duplicate = pure
+  -- all rotations of the initial vector
+  duplicate {n} xs = init $ scanl (\(y :: ys),_ => rewrite plusCommutative 1 n in ys ++ [y]) xs xs  

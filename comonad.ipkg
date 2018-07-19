@@ -3,6 +3,10 @@ package comonad
 sourceloc  = git://git@github.com:vmchale/comonad.git
 bugtracker = http://www.github.com/vmchale/comonad/issues
 
+sourcedir = src
+
+--pkgs = contrib
+
 modules = Control.Comonad
         , Control.Comonad.Trans
         , Control.Comonad.Store
@@ -10,4 +14,5 @@ modules = Control.Comonad
         , Control.Comonad.Traced
         , Control.Comonad.Cofree
         , Control.Coapplicative
+        , Interfaces.Verified.Comonad
        
