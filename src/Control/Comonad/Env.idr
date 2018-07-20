@@ -21,7 +21,7 @@ interface Comonad w => ComonadEnv e (w : Type -> Type) | m where
 -- | The `ComonadEnv` type class describes the operations supported by this comonad.
 record EnvT (e : Type) (w : Type -> Type) (a : Type) where
   constructor MkEnvT
-  runReaderT : (e, w a)
+  runEnvT : (e, w a)
 
 ||| Change the underlying comonad and data type in an `EnvT` context.
 mapEnvT : (w1 a -> w2 b) -> EnvT e w1 a -> EnvT e w2 b
