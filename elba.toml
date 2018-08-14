@@ -1,0 +1,13 @@
+[package]
+name = "vmchale/comonad"
+version = "0.1.0"
+authors = ["Vanessa McHale <vanessa.mchale@iohk.io>"]
+description = "Comonads for Idris"
+license = "BSD3"
+
+[targets.lib]
+path = "."
+mods = [ "Control.Comonad"
+       , "Control.Comonad.Cofree"
+       ]
+idris_opts = ["--warnreach"]
